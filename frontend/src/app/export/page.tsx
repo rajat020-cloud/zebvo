@@ -7,7 +7,6 @@ import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
 import { 
   FileText, 
-  Spreadsheet, // using Table as custom icon fallback if needed
   Table,
   ShieldCheck, 
   DownloadCloud, 
