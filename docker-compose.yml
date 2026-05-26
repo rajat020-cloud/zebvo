@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: zebvo-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=zebvo_scraper
+    restart: always
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: zebvo-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: zebvo-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGO_URI=mongodb://mongodb:27017/zebvo_scraper
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=production_level_jwt_secret_zebvo_2026
+      - OPENAI_API_KEY=mock_mode
+      - SCRAPE_INTERVAL_MINUTES=15
+    depends_on:
+      - mongodb
+      - redis
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: zebvo-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  mongodb_data:
+  redis_data:
