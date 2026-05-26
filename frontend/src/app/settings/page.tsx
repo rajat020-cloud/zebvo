@@ -12,8 +12,7 @@ import {
   Database, 
   Key, 
   CheckCircle2, 
-  AlertTriangle,
-  Github
+  AlertTriangle
 } from 'lucide-react';
 
 export default function Settings() {
